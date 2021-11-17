@@ -1,0 +1,81 @@
+name: '🚀 Deploy'
+
+env:
+  NODE_VERSION: 14.x
+  DIST_PATH: ./dist/
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: '📃 Lint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: '🛠 Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: '📦 Install Dependencies'
+        run: npm ci
+      - name: '📃 Lint'
+        run: npm run lint
+
+  test:
+    name: '⚙ Unit Test'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: '🛠 Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: '📦 Install Dependencies'
+        run: npm ci
+      - name: '⚙ Unit Test'
+        run: npm run test:unit
+
+  build:
+    name: '🔨 Build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: '🛠 Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: '📦 Install Dependencies'
+        run: npm ci
+      - name: '🔨 Build'
+        run: npm run build
+      - name: '⬆ Upload Dist'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ${{ env.DIST_PATH }}
+          retention-days: 1
+
+  deploy:
+    name: '🚀 FTP Deploy'
+    needs: [ lint, test, build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: '⬇ Download Dist'
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ${{ env.DIST_PATH }}
+      - name: '🚀 FTP Deploy'
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ftp.over.red
+          username: root@over.red
+          password: ${{ secrets.ftp_password }}
+          local-dir: './dist/'
+          server-dir: '/cv.over.red/'
+
