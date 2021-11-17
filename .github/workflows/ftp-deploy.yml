@@ -1,0 +1,47 @@
+name: '⚙ 🚀 FTP Deploy'
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: '🛠 Use node ${{ matrix.node-version }}'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: '📦 Install Dependencies'
+        run: npm ci
+
+      - name: '🧹 Audit & Fix Dependencies'
+        run: npm audit fix
+
+      - name: '📃 Lint'
+        run: npm run lint
+
+      - name: '⚙ Unit Test'
+        run: npm run test:unit
+
+      - name: '🔨 Build'
+        run: npm run build
+
+      - name: '🚀 FTP Deploy'
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ftp.over.red
+          username: root@over.red
+          password: ${{ secrets.ftp_password }}
+          local-dir: './dist/'
+          server-dir: '/cv.over.red'
