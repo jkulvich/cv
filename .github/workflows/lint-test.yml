@@ -1,4 +1,4 @@
-name: generate-artifacts
+name: '🔍 Lint, Test & Build'
 
 on:
   #   push:
@@ -16,7 +16,7 @@ jobs:
         node-version: [ 14.x ]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
@@ -24,10 +24,9 @@ jobs:
         run: npm ci
       - name: Audit & Fix Dependencies
         run: npm audit fix
+      - name: Lint
+        run: npm run lint
+      - name: Unit Test
+        run: npm run test:unit
       - name: Build
         run: npm run build
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist
