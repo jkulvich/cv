@@ -1,20 +1,15 @@
-name: '⚙ 🚀 FTP Deploy'
+name: '👉 🔍 Lint, Test & Build'
 
 env:
   NODE_VERSION: 14.x
   DIST_PATH: ./dist/
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
   workflow_dispatch:
 
 jobs:
+
   lint:
-    name: '📃 Lint'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -59,24 +54,4 @@ jobs:
         with:
           name: dist
           path: ${{ env.DIST_PATH }}
-          retention-days: 1
-
-  deploy:
-    name: '🚀 FTP Deploy'
-    needs: [ lint, test, build ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: '⬇ Download Dist'
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: ${{ env.DIST_PATH }}
-      - name: '🚀 FTP Deploy'
-        uses: SamKirkland/FTP-Deploy-Action@4.1.0
-        with:
-          server: ftp.over.red
-          username: root@over.red
-          password: ${{ secrets.ftp_password }}
-          local-dir: './dist/'
-          server-dir: '/cv.over.red/'
-
+          retention-days: 7
