@@ -1,10 +1,14 @@
-name: '👉 🔍 Lint, Test & Build'
+name: '🔍 Lint, Test & Build'
 
 env:
   NODE_VERSION: 14.x
   DIST_PATH: ./dist/
 
 on:
+  push:
+    branches: [ '!main' ]
+  pull_request:
+    branches: [ '!main' ]
   workflow_dispatch:
 
 jobs:
@@ -54,4 +58,4 @@ jobs:
         with:
           name: dist
           path: ${{ env.DIST_PATH }}
-          retention-days: 7
+          retention-days: 1
