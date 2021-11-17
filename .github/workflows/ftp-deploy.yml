@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  install:
-    name: '🛠 Install Dependencies'
+  lint:
+    name: '📃 Lint'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,72 +24,79 @@ jobs:
       - name: '💾 Cache/Restore npm'
         uses: actions/cache@v2
         with:
-          path: ~/.npm
+          path: '~/.npm'
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: '📦 Install Dependencies'
         run: npm ci
-      - name: '🧹 Audit & Fix Dependencies'
-        run: npm audit fix
-      - name: '💾 Cache Project'
-        uses: actions/cache@v2
-        with:
-          path: ./
-          key: ${{ runner.os }}-project-${{ hashFiles('./**') }}
-          restore-keys: |
-            ${{ runner.os }}-project-
-
-  lint:
-    name: '📃 Lint'
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - name: '⬇ Restore Project'
-        uses: actions/cache@v2
-        with:
-          path: ./
-          key: ${{ runner.os }}-project-${{ hashFiles('./**') }}
-          restore-keys: |
-            ${{ runner.os }}-project-
       - name: '📃 Lint'
         run: npm run lint
 
   test:
     name: '⚙ Unit Test'
-    needs: install
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
     steps:
+      - uses: actions/checkout@v2
+      - name: '🛠 Use node ${{ matrix.node-version }}'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: '💾 Cache/Restore npm'
+        uses: actions/cache@v2
+        with:
+          path: '~/.npm'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: '📦 Install Dependencies'
+        run: npm ci
       - name: '⚙ Unit Test'
         run: npm run test:unit
 
   build:
     name: '🔨 Build'
-    needs: install
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
     steps:
-      - name: '🔨 Build'
-        run: npm run build
-      - name: '💾 Cache Dist'
+      - uses: actions/checkout@v2
+      - name: '🛠 Use node ${{ matrix.node-version }}'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: '💾 Cache/Restore npm'
         uses: actions/cache@v2
         with:
-          path: ./dist
-          key: ${{ runner.os }}-dist-${{ hashFiles('./dist/**') }}
+          path: '~/.npm'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-dist-
+            ${{ runner.os }}-node-
+      - name: '📦 Install Dependencies'
+        run: npm ci
+      - name: '🔨 Build'
+        run: npm run build
+      - name: '⬆ Upload Dist'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: './dist/'
+
 
   deploy:
     name: '🚀 FTP Deploy'
     needs: [ lint, test, build ]
     runs-on: ubuntu-latest
     steps:
-      - name: '⬇ Restore Cache Dist'
-        uses: actions/cache@v2
+      - name: '⬇ Download Dist'
+        uses: actions/download-artifact@v2
         with:
-          path: ./dist
-          key: ${{ runner.os }}-dist-${{ hashFiles('./dist/**') }}
-          restore-keys: |
-            ${{ runner.os }}-dist-
+          name: dist
+          path: './dist/'
       - name: '🚀 FTP Deploy'
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
