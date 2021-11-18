@@ -1,3 +1,6 @@
+# Redirecting All Access Errors to index
+ErrorDocument 403 /index.html
+
 # Force HTTPS
 <IfModule mod_rewrite.c>
   RewriteEngine On
