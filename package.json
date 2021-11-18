@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "all": "yarn lint && yarn test:unit && yarn build"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -77,6 +78,13 @@
     "preset": "@vue/cli-plugin-unit-jest/presets/typescript-and-babel",
     "transform": {
       "^.+\\.vue$": "vue-jest"
+    }
+  },
+  "vue": {
+    "pwa": {
+      "workboxOptions": {
+        "exclude": [".htaccess"]
+      }
     }
   }
 }
