@@ -5,10 +5,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Notify } from 'quasar'
 
 export default defineComponent({
   mounted () {
     this.hideSitePreloader()
+    // LoadingBar.start()
+    // LoadingBar.stop()
+    // Notify.create({
+    //   message: 'Приложение обновлено',
+    //   caption: 'Обновите страницу, чтобы увидеть изменения',
+    //   icon: 'mdi-alert-decagram'
+    // })
   },
 
   methods: {
