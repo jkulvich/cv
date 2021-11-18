@@ -10,8 +10,11 @@
     "all": "yarn lint && yarn test:unit && yarn build"
   },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
+    "quasar": "^2.0.0",
     "register-service-worker": "^1.7.1",
+    "reset.css": "^2.0.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
@@ -38,10 +41,29 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^7.0.0",
-    "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
+    "sass": "1.32.12",
+    "sass-loader": "^10.1.0",
     "typescript": "~4.1.5",
+    "vue-cli-plugin-quasar": "~4.0.4",
     "vue-jest": "^5.0.0-0"
+  },
+  "vue": {
+    "pwa": {
+      "workboxOptions": {
+        "exclude": [
+          ".htaccess"
+        ]
+      }
+    },
+    "pluginOptions": {
+      "quasar": {
+        "importStrategy": "kebab",
+        "rtlSupport": false
+      }
+    },
+    "transpileDependencies": [
+      "quasar"
+    ]
   },
   "eslintConfig": {
     "root": true,
@@ -78,13 +100,6 @@
     "preset": "@vue/cli-plugin-unit-jest/presets/typescript-and-babel",
     "transform": {
       "^.+\\.vue$": "vue-jest"
-    }
-  },
-  "vue": {
-    "pwa": {
-      "workboxOptions": {
-        "exclude": [".htaccess"]
-      }
     }
   }
 }

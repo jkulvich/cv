@@ -1,17 +1,85 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+</head>
+<body style="margin: 0">
+
+<!-- Embedded Site's Preloader -->
+<div class="site-preloader" style="
+    background: #263238;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    font-size: 14pt;
+    color: #FFFFFF;
+">
+    <div class="site-preloader-container" style="filter: opacity(0)">
+        <svg style="width:48px;height:48px;margin-bottom: 24px;" viewBox="0 0 24 24">
+            <path fill="#FFFFFF" d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1
+            5,3H9.18C9.6,1.84 10.7,1 12,1C13.3,1 14.4,1.84 14.82,3H19M12,3A1,1 0 0,0 11,4A1,1 0 0,0 12,5A1,1 0
+            0,0 13,4A1,1 0 0,0 12,3M7,7V5H5V19H19V5H17V7H7M12,9A2,2 0 0,1 14,11A2,2 0 0,1 12,13A2,2 0 0,1 10,11A2,2
+            0 0,1 12,9M8,17V16C8,14.9 9.79,14 12,14C14.21,14 16,14.9 16,16V17H8Z" />
+        </svg>
+        <div class="progress"></div>
+    </div>
+    <style>
+        .site-preloader .site-preloader-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: site-preloader-fade-in .3s .1s ease-out both;
+        }
+
+        .site-preloader .site-preloader-container .progress {
+            position: relative;
+            background: #37474F;
+            width: 100px;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .site-preloader .site-preloader-container .progress::after {
+            content: ' ';
+            position: absolute;
+            height: 100%;
+            width: 50px;
+            border-radius: 2px;
+            background: #FFFFFF;
+            animation: site-preloader-progress-bar .8s .1s infinite;
+        }
+
+        @keyframes site-preloader-fade-in {
+            0% {
+                filter: opacity(0);
+            }
+            100% {
+                filter: opacity(1);
+            }
+        }
+
+        @keyframes site-preloader-progress-bar {
+            0% {
+                transform: translateX(-50px);
+            }
+            100% {
+                transform: translateX(100px);
+            }
+        }
+    </style>
+</div>
+
+<div id="app"></div>
+</body>
 </html>

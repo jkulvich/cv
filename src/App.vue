@@ -1,29 +1,34 @@
 <template>
-  <div id="nav">
-    MY CV
-  </div>
+  In Dev
   <router-view/>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-#nav {
-  padding: 30px;
+export default defineComponent({
+  mounted () {
+    this.hideSitePreloader()
+  },
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+  methods: {
+    hideSitePreloader () {
+      const sitePreloader = document.querySelector('.site-preloader') as HTMLDivElement
+      const anim = sitePreloader.animate([
+        { filter: 'opacity(1)' },
+        { filter: 'opacity(0)' }
+      ], {
+        delay: 500,
+        duration: 300
+      })
+      anim.onfinish = () => {
+        sitePreloader.style.visibility = 'hidden'
+      }
     }
   }
-}
+})
+</script>
+
+<style lang="scss">
+@import "~reset.css";
 </style>
